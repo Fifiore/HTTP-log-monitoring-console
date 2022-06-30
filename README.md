@@ -76,7 +76,7 @@ Execute log_monitoring_test
 
 ## Limitations
 - No check on input log lines except the date: a complete check validity should be implemented
-- Invalid logs are silently ignored: user should be warn when logs are ignored and alert should be thown went to many logs are invalid
+- Invalid logs are silently ignored: user should be warn when logs are ignored and alert should be thrown went to many logs are invalid
 - Stream is read line by line: is is an acceptable simple implementation. In case of high volume, a read by chunk could be more efficient
 - Usage of a map to emulate a circular buffer: it has been design as a light solution. If we agree to have a dependency on a large third party, we could use a circular buffer like boost::circular_buffer
 
