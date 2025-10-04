@@ -1,5 +1,9 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 project(log_monitoring)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(GTest)
 
@@ -20,14 +24,11 @@ add_library(log_monitoring_lib STATIC
 	src/lib/traffic_alert.h
 	src/lib/traffic_log.h 
 	src/lib/window_metrics.h)
-target_compile_features(log_monitoring_lib PRIVATE cxx_std_17)
 
 add_executable(log_monitoring src/log_monitoring.cpp)
-target_compile_features(log_monitoring PRIVATE cxx_std_17)
 target_include_directories(log_monitoring PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
 
 add_executable(log_monitoring_test src/test/alerting_test.cpp src/test/metrics_tracking_tests.cpp src/test/tools_test.cpp)
-target_compile_features(log_monitoring_test PRIVATE cxx_std_17)
 target_include_directories(log_monitoring_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
 
 target_link_libraries(log_monitoring PRIVATE log_monitoring_lib)

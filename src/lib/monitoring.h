@@ -3,8 +3,6 @@
 
 namespace monitoring {
 
-  void execute(const std::string& input_file, int threshold);
+void execute(const std::string &input_file, int threshold);
 
 }
-
-

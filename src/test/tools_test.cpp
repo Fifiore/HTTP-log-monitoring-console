@@ -1,5 +1,5 @@
+#include "tools.h"
 #include <gtest/gtest.h>
-#include "Tools.h"
 
 using namespace monitoring::tools;
 
@@ -35,7 +35,7 @@ TEST(tools_test, store_count_in_map) {
 }
 
 TEST(tools_test, find_position) {
-  std::vector<std::string> data = { "a", "b", "c", "d" };
+  std::vector<std::string> data = {"a", "b", "c", "d"};
 
   EXPECT_EQ(2, find_position(data, "c"));
   EXPECT_EQ(-1, find_position(data, "g"));

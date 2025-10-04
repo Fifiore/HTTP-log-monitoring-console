@@ -1,12 +1,12 @@
-#include <gtest/gtest.h>
 #include "metrics_tracking.h"
+#include "tools.h"
 #include "traffic_log.h"
 #include "window_metrics.h"
-#include "Tools.h"
+#include <gtest/gtest.h>
 #include <string>
 
 namespace monitoring {
-  std::string extract_section(const std::string& request);
+std::string extract_section(const std::string &request);
 }
 
 using namespace monitoring;
@@ -26,9 +26,10 @@ TEST(metrics_tracking_test, extract_section_valid_request) {
   EXPECT_EQ("/report", extract_section(s2));
 }
 
-std::vector<traffic_log> build_logs(std::vector<std::vector<std::string>> inputs) {
+std::vector<traffic_log>
+build_logs(std::vector<std::vector<std::string>> inputs) {
   std::vector<traffic_log> logs;
-  for (const auto& input : inputs) {
+  for (const auto &input : inputs) {
     if (4 == input.size()) {
       traffic_log log;
       log.m_date = std::stoll(input[0]);
@@ -42,26 +43,25 @@ std::vector<traffic_log> build_logs(std::vector<std::vector<std::string>> inputs
 }
 
 std::vector<std::vector<std::string>> input_logs = {
-  {"2", "200", "PUT /api/user HTTP/1.0", "10.0.0.3"},
-  {"1", "200", "DELETE /api/user HTTP/1.0", "10.0.0.1"},
-  {"1", "404", "GET /api/user HTTP/1.0", "10.0.0.2"},
-  {"1", "200", "POST /report HTTP/1.0", "10.0.0.1"},
-  {"2", "500", "PUT /api/user HTTP/1.0", "10.0.0.1"},
-  {"3", "200", "PATCH /report HTTP/1.0", "10.0.0.1"},
-  {"3", "200", "GET /api/user HTTP/1.0", "10.0.0.1"},
-  {"4", "200", "GET /api/user HTTP/1.0", "10.0.0.2"},
-  {"4", "200", "PUT /api/user HTTP/1.0", "10.0.0.3"},
-  {"5", "200", "POST /report HTTP/1.0", "10.0.0.1"},
-  {"5", "404", "GET /report HTTP/1.0", "10.0.0.4"},
-  {"7", "500", "PUT /api/user HTTP/1.0", "10.0.0.1"},
-  {"7", "200", "PUT /report HTTP/1.0", "10.0.0.1"},
-  {"9", "200", "GET /report HTTP/1.0", "10.0.0.1"},
-  {"10", "404", "GET /api/user HTTP/1.0", "10.0.0.2"},
-  {"10", "200", "PUT /api/user HTTP/1.0", "10.0.0.3"},
-  {"11", "200", "POST /report HTTP/1.0", "10.0.0.1"},
-  {"11", "500", "PUT /api/user HTTP/1.0", "10.0.0.1"},
-  {"12", "200", "PUT /report HTTP/1.0", "10.0.0.1"}
-};
+    {"2", "200", "PUT /api/user HTTP/1.0", "10.0.0.3"},
+    {"1", "200", "DELETE /api/user HTTP/1.0", "10.0.0.1"},
+    {"1", "404", "GET /api/user HTTP/1.0", "10.0.0.2"},
+    {"1", "200", "POST /report HTTP/1.0", "10.0.0.1"},
+    {"2", "500", "PUT /api/user HTTP/1.0", "10.0.0.1"},
+    {"3", "200", "PATCH /report HTTP/1.0", "10.0.0.1"},
+    {"3", "200", "GET /api/user HTTP/1.0", "10.0.0.1"},
+    {"4", "200", "GET /api/user HTTP/1.0", "10.0.0.2"},
+    {"4", "200", "PUT /api/user HTTP/1.0", "10.0.0.3"},
+    {"5", "200", "POST /report HTTP/1.0", "10.0.0.1"},
+    {"5", "404", "GET /report HTTP/1.0", "10.0.0.4"},
+    {"7", "500", "PUT /api/user HTTP/1.0", "10.0.0.1"},
+    {"7", "200", "PUT /report HTTP/1.0", "10.0.0.1"},
+    {"9", "200", "GET /report HTTP/1.0", "10.0.0.1"},
+    {"10", "404", "GET /api/user HTTP/1.0", "10.0.0.2"},
+    {"10", "200", "PUT /api/user HTTP/1.0", "10.0.0.3"},
+    {"11", "200", "POST /report HTTP/1.0", "10.0.0.1"},
+    {"11", "500", "PUT /api/user HTTP/1.0", "10.0.0.1"},
+    {"12", "200", "PUT /report HTTP/1.0", "10.0.0.1"}};
 
 TEST(metrics_tracking_test, execution) {
   channel<window_metrics> output_pipe;
@@ -69,7 +69,7 @@ TEST(metrics_tracking_test, execution) {
   tracking.set_output_channel(&output_pipe);
 
   std::vector<traffic_log> logs = build_logs(input_logs);
-  for (const auto& log : logs) {
+  for (const auto &log : logs) {
     tracking.push_log(log);
   }
 
@@ -91,7 +91,8 @@ TEST(metrics_tracking_test, execution) {
   EXPECT_EQ(7, alerts[2].m_start_date);
   EXPECT_EQ(9, alerts[2].m_end_date);
 
-  //The window [10,12] is ignored due to 1 second delay needed to accept the date 12
+  // The window [10,12] is ignored due to 1 second delay needed to accept the
+  // date 12
 
   EXPECT_EQ(7, alerts[0].m_hit_nb);
   EXPECT_EQ(4, alerts[1].m_hit_nb);
@@ -110,7 +111,8 @@ TEST(metrics_tracking_test, execution) {
   EXPECT_EQ("/report", alerts[2].m_most_hit_sections[0]);
   EXPECT_EQ(2, alerts[2].m_most_hit_section_count);
 
-  EXPECT_EQ(1, alerts[0].m_operation_count[static_cast<int>(http_verb::Delete)]);
+  EXPECT_EQ(1,
+            alerts[0].m_operation_count[static_cast<int>(http_verb::Delete)]);
   EXPECT_EQ(2, alerts[0].m_operation_count[static_cast<int>(http_verb::Get)]);
   EXPECT_EQ(1, alerts[0].m_operation_count[static_cast<int>(http_verb::Patch)]);
   EXPECT_EQ(1, alerts[0].m_operation_count[static_cast<int>(http_verb::Post)]);

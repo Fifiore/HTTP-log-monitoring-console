@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "default",
+      "inherits": "ninja-vcpkg",
+      "environment": {
+        "VCPKG_ROOT": "C:\\Users\\flore\\vcpkg"
+      }
+    }
+  ]
+}
